@@ -1,0 +1,137 @@
+/* Загальні стилі для всього документа */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;  /* Використовуємо стандартний шрифт */
+  background-color: #f5f5f5;        /* Світлий фон для сторінки */
+  color: #333;                       /* Темний текст для кращої видимості */
+  line-height: 1.6;                  /* Більший інтерліньяж для зручності читання */
+  font-size: 16px;
+}
+
+/* Основні стилі для контейнера додатку */
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Стилі для кнопок */
+button {
+  background-color: #4CAF50; /* Зелений фон */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049; /* Трохи темніший зелений при наведенні */
+}
+
+/* Стилі для інпутів */
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+/* Стилі для контейнера картки тренування */
+.workout-card {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.workout-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.workout-card p {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Стилі для картки продукту */
+.product-card {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.product-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.product-card p {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Стилі для модальних вікон */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+}
+
+/* Стилі для сторінок */
+.page {
+  margin: 20px;
+}
+
+.page h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Адаптивні стилі для мобільних пристроїв */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .workout-card, .product-card {
+    padding: 10px;
+  }
+
+  button {
+    padding: 8px 16px;
+  }
+}
