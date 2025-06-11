@@ -1,146 +1,262 @@
-// src/store/useNutritionStore.js
 import { create } from 'zustand';
-
-const STORAGE_KEY = 'fitapp_nutrition_data';
-
-const saveToStorage = (data) => {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch (error) {
-        console.error('Error saving nutrition data:', error);
-    }
-};
-
-const loadFromStorage = () => {
-    try {
-        const data = localStorage.getItem(STORAGE_KEY);
-        return data ? JSON.parse(data) : { dailyMeals: [], mealHistory: [] };
-    } catch (error) {
-        console.error('Error loading nutrition data:', error);
-        return { dailyMeals: [], mealHistory: [] };
-    }
-};
-
-const getTodayDate = () => {
-    return new Date().toISOString().split('T')[0];
-};
+import { nutritionAPI, nutritionUtils } from '../services/nutritionAPI.js';
+import { api } from '../services/api.js';
+import toast from 'react-hot-toast';
 
 export const useNutritionStore = create((set, get) => ({
     // Стан
-    dailyMeals: loadFromStorage().dailyMeals || [],
-    mealHistory: loadFromStorage().mealHistory || [],
+    dailyMeals: [],
+    mealHistory: [],
+    foodItems: [],
+    foodCategories: [],
 
-    // Дії
-    addMeal: (product, quantity = 100) => {
-        const meal = {
-            id: Date.now(),
-            ...product,
-            quantity,
-            consumedAt: new Date().toISOString(),
-            date: getTodayDate()
-        };
+    // Стан завантаження
+    isLoading: false,
+    isLoadingMeals: false,
+    isLoadingHistory: false,
 
-        const currentMeals = get().dailyMeals;
-        const updatedMeals = [...currentMeals, meal];
+    // Стан помилок
+    error: null,
 
-        set({ dailyMeals: updatedMeals });
+    // ПРОДУКТИ ХАРЧУВАННЯ
 
-        const data = {
-            dailyMeals: updatedMeals,
-            mealHistory: get().mealHistory
-        };
-        saveToStorage(data);
+    // Завантажити всі продукти
+    loadFoodItems: async () => {
+        try {
+            set({ isLoading: true, error: null });
+            const response = await nutritionAPI.getAllFoodItems();
+
+            if (response.success) {
+                const formattedFoods = response.data.map(nutritionUtils.formatFoodItem);
+                set({ foodItems: formattedFoods });
+            }
+        } catch (error) {
+            const errorMessage = api.handleError(error);
+            set({ error: errorMessage });
+            console.error('Помилка завантаження продуктів:', error);
+        } finally {
+            set({ isLoading: false });
+        }
     },
 
-    removeMeal: (mealId) => {
-        const currentMeals = get().dailyMeals;
-        const updatedMeals = currentMeals.filter(meal => meal.id !== mealId);
+    // Завантажити категорії продуктів
+    loadFoodCategories: async () => {
+        try {
+            const response = await nutritionAPI.getFoodCategories();
 
-        set({ dailyMeals: updatedMeals });
-
-        const data = {
-            dailyMeals: updatedMeals,
-            mealHistory: get().mealHistory
-        };
-        saveToStorage(data);
+            if (response.success) {
+                set({ foodCategories: response.data });
+            }
+        } catch (error) {
+            console.error('Помилка завантаження категорій:', error);
+        }
     },
 
-    updateMealQuantity: (mealId, newQuantity) => {
-        const currentMeals = get().dailyMeals;
-        const updatedMeals = currentMeals.map(meal =>
-            meal.id === mealId ? { ...meal, quantity: newQuantity } : meal
-        );
+    // Пошук продуктів
+    searchFoodItems: async (searchTerm, categoryId = null) => {
+        try {
+            if (!searchTerm || searchTerm.length < 2) {
+                return [];
+            }
 
-        set({ dailyMeals: updatedMeals });
+            const response = await nutritionAPI.searchFoodItems(searchTerm, categoryId);
 
-        const data = {
-            dailyMeals: updatedMeals,
-            mealHistory: get().mealHistory
-        };
-        saveToStorage(data);
+            if (response.success) {
+                return response.data.map(nutritionUtils.formatFoodItem);
+            }
+            return [];
+        } catch (error) {
+            console.error('Помилка пошуку продуктів:', error);
+            return [];
+        }
     },
 
-    saveDayToHistory: () => {
-        const today = getTodayDate();
-        const currentMeals = get().dailyMeals;
-        const currentHistory = get().mealHistory;
+    // ЩОДЕННИЙ РАЦІОН
 
-        if (currentMeals.length === 0) return;
+    // Завантажити раціон на дату
+    loadDailyMeals: async (date = null) => {
+        try {
+            set({ isLoadingMeals: true, error: null });
+            const response = await nutritionAPI.getDailyMeals(date);
 
-        const dayRecord = {
-            date: today,
-            meals: [...currentMeals],
-            totalCalories: get().getTotalCalories(),
-            createdAt: new Date().toISOString()
-        };
-
-        const updatedHistory = [...currentHistory.filter(day => day.date !== today), dayRecord];
-
-        set({
-            mealHistory: updatedHistory,
-            dailyMeals: [] // Очищаємо день після збереження
-        });
-
-        const data = {
-            dailyMeals: [],
-            mealHistory: updatedHistory
-        };
-        saveToStorage(data);
+            if (response.success) {
+                const formattedMeals = response.data.meals.map(nutritionUtils.formatMeal);
+                set({ dailyMeals: formattedMeals });
+                return response.data;
+            }
+        } catch (error) {
+            const errorMessage = api.handleError(error);
+            set({ error: errorMessage });
+            console.error('Помилка завантаження раціону:', error);
+        } finally {
+            set({ isLoadingMeals: false });
+        }
     },
 
-    clearDay: () => {
-        set({ dailyMeals: [] });
+    // Додати продукт до раціону
+    addMeal: async (product, quantity = 100) => {
+        try {
+            set({ isLoadingMeals: true });
 
-        const data = {
-            dailyMeals: [],
-            mealHistory: get().mealHistory
-        };
-        saveToStorage(data);
+            // Якщо це локальний продукт (з foodList.js), використовуємо його ID
+            // Якщо це продукт з API, у нього вже є правильний ID
+            const foodItemId = product.id;
+
+            const response = await nutritionAPI.addDailyMeal(foodItemId, quantity);
+
+            if (response.success) {
+                const formattedMeal = nutritionUtils.formatMeal(response.data);
+
+                set(state => ({
+                    dailyMeals: [...state.dailyMeals, formattedMeal]
+                }));
+
+                toast.success(`${product.name} додано до раціону`);
+                return formattedMeal;
+            }
+        } catch (error) {
+            const errorMessage = api.handleError(error);
+            toast.error(errorMessage);
+            console.error('Помилка додавання до раціону:', error);
+        } finally {
+            set({ isLoadingMeals: false });
+        }
     },
 
-    // Обчислювані значення
+    // Оновити кількість продукту
+    updateMealQuantity: async (mealId, newQuantity) => {
+        try {
+            const response = await nutritionAPI.updateDailyMeal(mealId, newQuantity);
+
+            if (response.success) {
+                const updatedMeal = nutritionUtils.formatMeal(response.data);
+
+                set(state => ({
+                    dailyMeals: state.dailyMeals.map(meal =>
+                        meal.id === mealId ? updatedMeal : meal
+                    )
+                }));
+
+                toast.success('Кількість оновлено');
+                return updatedMeal;
+            }
+        } catch (error) {
+            const errorMessage = api.handleError(error);
+            toast.error(errorMessage);
+            console.error('Помилка оновлення кількості:', error);
+        }
+    },
+
+    // Видалити продукт з раціону
+    removeMeal: async (mealId) => {
+        try {
+            const response = await nutritionAPI.deleteDailyMeal(mealId);
+
+            if (response.success) {
+                set(state => ({
+                    dailyMeals: state.dailyMeals.filter(meal => meal.id !== mealId)
+                }));
+
+                toast.success('Продукт видалено з раціону');
+            }
+        } catch (error) {
+            const errorMessage = api.handleError(error);
+            toast.error(errorMessage);
+            console.error('Помилка видалення з раціону:', error);
+        }
+    },
+
+    // Очистити день
+    clearDay: async (date = null) => {
+        try {
+            const response = await nutritionAPI.clearDailyMeals(date);
+
+            if (response.success) {
+                set({ dailyMeals: [] });
+                toast.success('День очищено');
+            }
+        } catch (error) {
+            const errorMessage = api.handleError(error);
+            toast.error(errorMessage);
+            console.error('Помилка очищення дня:', error);
+        }
+    },
+
+    // ІСТОРІЯ ХАРЧУВАННЯ
+
+    // Завантажити історію харчування
+    loadMealHistory: async (limit = 30) => {
+        try {
+            set({ isLoadingHistory: true, error: null });
+            const response = await nutritionAPI.getMealHistory(limit);
+
+            if (response.success) {
+                set({ mealHistory: response.data });
+                return response.data;
+            }
+        } catch (error) {
+            const errorMessage = api.handleError(error);
+            set({ error: errorMessage });
+            console.error('Помилка завантаження історії:', error);
+        } finally {
+            set({ isLoadingHistory: false });
+        }
+    },
+
+    // ОБЧИСЛЮВАНІ ЗНАЧЕННЯ
+
+    // Отримати загальну калорійність за день
     getTotalCalories: () => {
         const meals = get().dailyMeals;
-        return meals.reduce((total, meal) => {
-            return total + ((meal.calories * meal.quantity) / 100);
-        }, 0);
+        return meals.reduce((total, meal) => total + (meal.totalCalories || 0), 0);
     },
 
+    // Отримати загальні макроелементи за день
     getTotalNutrients: () => {
         const meals = get().dailyMeals;
-        return meals.reduce((totals, meal) => {
-            const factor = meal.quantity / 100;
-            return {
-                protein: totals.protein + (meal.protein * factor),
-                fat: totals.fat + (meal.fat * factor),
-                carbs: totals.carbs + (meal.carbs * factor)
-            };
-        }, { protein: 0, fat: 0, carbs: 0 });
+        return meals.reduce((totals, meal) => ({
+            protein: totals.protein + (meal.totalProtein || 0),
+            fat: totals.fat + (meal.totalFat || 0),
+            carbs: totals.carbs + (meal.totalCarbs || 0)
+        }), { protein: 0, fat: 0, carbs: 0 });
     },
 
-    getMealsByDate: (date) => {
-        const history = get().mealHistory;
-        const dayRecord = history.find(day => day.date === date);
-        return dayRecord ? dayRecord.meals : [];
+    // Отримати статистику за день
+    getDayStats: () => {
+        const meals = get().dailyMeals;
+        const totals = get().getTotalNutrients();
+        const totalCalories = get().getTotalCalories();
+
+        return {
+            meal_count: meals.length,
+            total_calories: Math.round(totalCalories * 100) / 100,
+            total_protein: Math.round(totals.protein * 100) / 100,
+            total_fat: Math.round(totals.fat * 100) / 100,
+            total_carbs: Math.round(totals.carbs * 100) / 100
+        };
+    },
+
+    // УТИЛІТИ
+
+    // Очистити помилки
+    clearError: () => set({ error: null }),
+
+    // Ініціалізація (завантажити початкові дані)
+    initialize: async () => {
+        const store = get();
+        await Promise.all([
+            store.loadFoodItems(),
+            store.loadFoodCategories(),
+            store.loadDailyMeals()
+        ]);
+    },
+
+    // Оновити все
+    refresh: async () => {
+        const store = get();
+        await Promise.all([
+            store.loadDailyMeals(),
+            store.loadMealHistory()
+        ]);
     }
 }));

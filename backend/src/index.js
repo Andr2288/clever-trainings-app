@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import authRoutes from "./routes/auth.route.js";
+import nutritionRoutes from "./routes/nutrition.route.js";
+import workoutRoutes from "./routes/workout.route.js";
 import { testConnection, closePool } from "./config/database.js";
 
 // Завантаження змінних середовища
@@ -32,6 +34,8 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/nutrition", nutritionRoutes);
+app.use("/api/workouts", workoutRoutes);
 
 // Health check endpoint
 app.get("/api/health", async (req, res) => {
@@ -41,7 +45,13 @@ app.get("/api/health", async (req, res) => {
             status: "OK",
             message: "FitApp API працює",
             database: dbConnected ? "підключено" : "помилка підключення",
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            endpoints: {
+                auth: "/api/auth",
+                nutrition: "/api/nutrition",
+                workouts: "/api/workouts",
+                health: "/api/health"
+            }
         });
     } catch (error) {
         res.status(500).json({
@@ -57,7 +67,34 @@ app.use((req, res) => {
     res.status(404).json({
         message: "Ендпоінт не знайдено",
         path: req.originalUrl,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        availableRoutes: [
+            "POST /api/auth/signup",
+            "POST /api/auth/login",
+            "POST /api/auth/logout",
+            "GET /api/auth/check",
+            "PUT /api/auth/update-profile",
+            "GET /api/auth/stats",
+            "GET /api/nutrition/foods",
+            "GET /api/nutrition/foods/search",
+            "GET /api/nutrition/categories",
+            "GET /api/nutrition/daily",
+            "POST /api/nutrition/daily",
+            "PUT /api/nutrition/daily/:mealId",
+            "DELETE /api/nutrition/daily/:mealId",
+            "DELETE /api/nutrition/daily",
+            "GET /api/nutrition/history",
+            "GET /api/workouts/types",
+            "GET /api/workouts/templates",
+            "GET /api/workouts/random",
+            "GET /api/workouts/completed",
+            "POST /api/workouts/completed",
+            "DELETE /api/workouts/completed/:workoutId",
+            "GET /api/workouts/today",
+            "GET /api/workouts/stats/weekly",
+            "GET /api/workouts/preferences",
+            "PUT /api/workouts/preferences"
+        ]
     });
 });
 
@@ -107,6 +144,10 @@ const startServer = async () => {
             console.log(`🚀 Режим: ${process.env.NODE_ENV || 'development'}`);
             console.log(`🚀 URL: http://localhost:${PORT}`);
             console.log(`🚀 Health check: http://localhost:${PORT}/api/health`);
+            console.log(`🚀 API Endpoints:`);
+            console.log(`🚀   Auth: http://localhost:${PORT}/api/auth`);
+            console.log(`🚀   Nutrition: http://localhost:${PORT}/api/nutrition`);
+            console.log(`🚀   Workouts: http://localhost:${PORT}/api/workouts`);
             console.log('🚀 ================================');
         });
 
