@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "setup-db": "node scripts/setupDatabase.js"
+    "setup-db": "node setupDatabase.js",
+    "check-db": "node checkDatabase.js"
   },
   "keywords": [
     "fitness",
@@ -26,8 +27,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.14.1",
-    "socket.io": "^4.8.1"
+    "mysql2": "^3.14.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
