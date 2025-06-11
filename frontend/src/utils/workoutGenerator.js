@@ -3,89 +3,113 @@
  * @param {string} fitnessLevel - рівень фізичної підготовки користувача ("beginner", "intermediate", "advanced")
  * @returns {Array} - масив тренувань, що відповідають рівню фізичної підготовки
  */
-export const generateWorkouts = (fitnessLevel) => {
+export const generateWorkouts = (fitnessLevel = 'beginner') => {
   const workouts = {
     beginner: [
       {
-        name: "Jumping Jacks",
-        sets: 3,
-        reps: 20,
-        duration: "30 seconds"
+        name: "Стрибки з розведенням рук і ніг",
+        type: "Кардіо",
+        duration: 10,
+        intensity: "Легка",
+        description: "Стрибки на місці з розведенням рук і ніг",
+        equipment: "Не потрібно"
       },
       {
-        name: "Push-ups",
-        sets: 3,
-        reps: 10,
-        duration: null
+        name: "Віджимання від підлоги",
+        type: "Силові",
+        duration: 5,
+        intensity: "Легка",
+        description: "Класичні віджимання від підлоги",
+        equipment: "Не потрібно"
       },
       {
-        name: "Bodyweight Squats",
-        sets: 3,
-        reps: 15,
-        duration: null
+        name: "Присідання",
+        type: "Силові",
+        duration: 8,
+        intensity: "Легка",
+        description: "Присідання з власною вагою",
+        equipment: "Не потрібно"
       },
       {
-        name: "Plank",
-        sets: 3,
-        reps: null,
-        duration: "20 seconds"
+        name: "Планка",
+        type: "Силові",
+        duration: 5,
+        intensity: "Легка",
+        description: "Утримання положення планки",
+        equipment: "Не потрібно"
       }
     ],
     intermediate: [
       {
-        name: "Burpees",
-        sets: 4,
-        reps: 15,
-        duration: null
+        name: "Берпі",
+        type: "Кардіо",
+        duration: 15,
+        intensity: "Середня",
+        description: "Комплексна вправа з стрибком",
+        equipment: "Не потрібно"
       },
       {
-        name: "Pull-ups",
-        sets: 4,
-        reps: 8,
-        duration: null
+        name: "Підтягування",
+        type: "Силові",
+        duration: 10,
+        intensity: "Середня",
+        description: "Підтягування на турніку",
+        equipment: "Турнік"
       },
       {
-        name: "Lunges",
-        sets: 4,
-        reps: 12,
-        duration: null
+        name: "Випади",
+        type: "Силові",
+        duration: 12,
+        intensity: "Середня",
+        description: "Випади вперед з власною вагою",
+        equipment: "Не потрібно"
       },
       {
-        name: "Mountain Climbers",
-        sets: 4,
-        reps: 20,
-        duration: "30 seconds"
+        name: "Альпініст",
+        type: "Кардіо",
+        duration: 10,
+        intensity: "Середня",
+        description: "Імітація підйому в гори",
+        equipment: "Не потрібно"
       }
     ],
     advanced: [
       {
         name: "Muscle-ups",
-        sets: 5,
-        reps: 5,
-        duration: null
+        type: "Силові",
+        duration: 20,
+        intensity: "Висока",
+        description: "Підйом силою на турніку",
+        equipment: "Турнік"
       },
       {
-        name: "Pistol Squats",
-        sets: 5,
-        reps: 10,
-        duration: null
+        name: "Пістолетики",
+        type: "Силові",
+        duration: 15,
+        intensity: "Висока",
+        description: "Присідання на одній нозі",
+        equipment: "Не потрібно"
       },
       {
-        name: "Handstand Push-ups",
-        sets: 5,
-        reps: 10,
-        duration: null
+        name: "Віджимання в стійці на руках",
+        type: "Силові",
+        duration: 10,
+        intensity: "Висока",
+        description: "Віджимання в стійці біля стіни",
+        equipment: "Стіна"
       },
       {
-        name: "Plank to Push-ups",
-        sets: 5,
-        reps: 15,
-        duration: null
+        name: "Планка з переходом у віджимання",
+        type: "Силові",
+        duration: 12,
+        intensity: "Висока",
+        description: "Динамічна планка з віджиманнями",
+        equipment: "Не потрібно"
       }
     ]
   };
 
-  return workouts[fitnessLevel] || workouts.beginner; // Default to beginner if no valid fitness level is provided
+  return workouts[fitnessLevel] || workouts.beginner;
 };
 
 /**
@@ -94,14 +118,62 @@ export const generateWorkouts = (fitnessLevel) => {
  */
 export const generateRandomWorkouts = () => {
   const allWorkouts = [
-    { name: "Jumping Jacks", sets: 3, reps: 20, duration: "30 seconds" },
-    { name: "Push-ups", sets: 3, reps: 15, duration: null },
-    { name: "Burpees", sets: 4, reps: 15, duration: null },
-    { name: "Lunges", sets: 4, reps: 12, duration: null },
-    { name: "Mountain Climbers", sets: 4, reps: 20, duration: "30 seconds" },
-    { name: "Pull-ups", sets: 4, reps: 8, duration: null },
-    { name: "Plank", sets: 3, reps: null, duration: "45 seconds" },
-    { name: "Squats", sets: 3, reps: 20, duration: null }
+    {
+      name: "Стрибки з розведенням рук і ніг",
+      type: "Кардіо",
+      duration: 10,
+      intensity: "Легка",
+      description: "Стрибки на місці з розведенням рук і ніг"
+    },
+    {
+      name: "Віджимання від підлоги",
+      type: "Силові",
+      duration: 8,
+      intensity: "Легка",
+      description: "Класичні віджимання від підлоги"
+    },
+    {
+      name: "Берпі",
+      type: "Кардіо",
+      duration: 15,
+      intensity: "Середня",
+      description: "Комплексна вправа з стрибком"
+    },
+    {
+      name: "Випади",
+      type: "Силові",
+      duration: 12,
+      intensity: "Середня",
+      description: "Випади вперед з власною вагою"
+    },
+    {
+      name: "Альпініст",
+      type: "Кардіо",
+      duration: 10,
+      intensity: "Середня",
+      description: "Імітація підйому в гори"
+    },
+    {
+      name: "Підтягування",
+      type: "Силові",
+      duration: 10,
+      intensity: "Середня",
+      description: "Підтягування на турніку"
+    },
+    {
+      name: "Планка",
+      type: "Силові",
+      duration: 8,
+      intensity: "Легка",
+      description: "Утримання положення планки"
+    },
+    {
+      name: "Присідання",
+      type: "Силові",
+      duration: 10,
+      intensity: "Легка",
+      description: "Присідання з власною вагою"
+    }
   ];
 
   // Випадковим чином вибираємо 5 вправ з масиву

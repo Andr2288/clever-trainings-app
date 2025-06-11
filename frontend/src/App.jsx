@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Workouts from './pages/Workouts';
 import Calories from './pages/Calories';
@@ -29,22 +29,20 @@ const App = () => {
     }
 
     return (
-        <Router>
-            <div className="app-container">
-                {/* Header component with navigation */}
-                <Header />
+        <div className="app-container">
+            {/* Header component with navigation */}
+            <Header />
 
-                <div className="main-content">
-                    {/* Define routes for different pages */}
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/workouts" element={<Workouts />} />
-                        <Route path="/calories" element={<Calories />} />
-                        <Route path="/profile" element={<Profile />} />
-                    </Routes>
-                </div>
+            <div className="main-content">
+                {/* Define routes for different pages */}
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/workouts" element={<Workouts />} />
+                    <Route path="/calories" element={<Calories />} />
+                    <Route path="/profile" element={<Profile />} />
+                </Routes>
             </div>
-        </Router>
+        </div>
     )
 }
 
