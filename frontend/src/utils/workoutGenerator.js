@@ -123,56 +123,120 @@ export const generateRandomWorkouts = () => {
       type: "Кардіо",
       duration: 10,
       intensity: "Легка",
-      description: "Стрибки на місці з розведенням рук і ніг"
+      description: "Стрибки на місці з розведенням рук і ніг",
+      equipment: "Не потрібно"
     },
     {
       name: "Віджимання від підлоги",
       type: "Силові",
       duration: 8,
       intensity: "Легка",
-      description: "Класичні віджимання від підлоги"
+      description: "Класичні віджимання від підлоги",
+      equipment: "Не потрібно"
     },
     {
       name: "Берпі",
       type: "Кардіо",
       duration: 15,
       intensity: "Середня",
-      description: "Комплексна вправа з стрибком"
+      description: "Комплексна вправа з стрибком",
+      equipment: "Не потрібно"
     },
     {
       name: "Випади",
       type: "Силові",
       duration: 12,
       intensity: "Середня",
-      description: "Випади вперед з власною вагою"
+      description: "Випади вперед з власною вагою",
+      equipment: "Не потрібно"
     },
     {
       name: "Альпініст",
       type: "Кардіо",
       duration: 10,
       intensity: "Середня",
-      description: "Імітація підйому в гори"
+      description: "Імітація підйому в гори",
+      equipment: "Не потрібно"
     },
     {
       name: "Підтягування",
       type: "Силові",
       duration: 10,
       intensity: "Середня",
-      description: "Підтягування на турніку"
+      description: "Підтягування на турніку",
+      equipment: "Турнік"
     },
     {
       name: "Планка",
       type: "Силові",
       duration: 8,
       intensity: "Легка",
-      description: "Утримання положення планки"
+      description: "Утримання положення планки",
+      equipment: "Не потрібно"
     },
     {
       name: "Присідання",
       type: "Силові",
       duration: 10,
       intensity: "Легка",
-      description: "Присідання з власною вагою"
+      description: "Присідання з власною вагою",
+      equipment: "Не потрібно"
+    },
+    {
+      name: "Пістолетики",
+      type: "Силові",
+      duration: 15,
+      intensity: "Висока",
+      description: "Присідання на одній нозі",
+      equipment: "Не потрібно"
+    },
+    {
+      name: "Віджимання на одній руці",
+      type: "Силові",
+      duration: 12,
+      intensity: "Висока",
+      description: "Складні віджимання на одній руці",
+      equipment: "Не потрібно"
+    },
+    {
+      name: "Стрибки з присіданням",
+      type: "Кардіо",
+      duration: 8,
+      intensity: "Середня",
+      description: "Динамічні присідання зі стрибками",
+      equipment: "Не потрібно"
+    },
+    {
+      name: "Віджимання з гантелями",
+      type: "Силові",
+      duration: 10,
+      intensity: "Середня",
+      description: "Віджимання з додатковою вагою",
+      equipment: "Гантелі"
+    },
+    {
+      name: "Скручування преса",
+      type: "Силові",
+      duration: 8,
+      intensity: "Легка",
+      description: "Класичні скручування для преса",
+      equipment: "Не потрібно"
+    },
+    {
+      name: "Планка з підйомом ніг",
+      type: "Силові",
+      duration: 10,
+      intensity: "Середня",
+      description: "Планка з поперемінним підйомом ніг",
+      equipment: "Не потрібно"
+    },
+    {
+      name: "Віджимання з упором на фітбол",
+      type: "Силові",
+      duration: 12,
+      intensity: "Середня",
+      description: "Віджимання з нестабільною поверхнею",
+      equipment: "Фітбол"
     }
   ];
 

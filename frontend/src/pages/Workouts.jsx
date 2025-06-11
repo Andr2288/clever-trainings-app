@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useWorkoutStore } from '../store/useWorkoutStore';
 import { generateWorkouts, generateRandomWorkouts } from '../utils/workoutGenerator';
 import WorkoutCard from '../components/WorkoutCard';
-import { Play, CheckCircle, RotateCcw, Settings, Trophy, Clock } from 'lucide-react';
+import { Play, RotateCcw, Settings, Trophy, Clock } from 'lucide-react';
 
 const Workouts = () => {
     const [activeWorkoutIndex, setActiveWorkoutIndex] = useState(null);
@@ -237,23 +237,27 @@ const Workouts = () => {
                         {currentWorkouts.length > 0 ? (
                             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
                                 {currentWorkouts.map((workout, index) => (
-                                    <div key={index} className="relative">
+                                    <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                                        {/* Workout Card Content */}
                                         <div className={`transition-all duration-300 ${
                                             activeWorkoutIndex === index
-                                                ? 'ring-4 ring-green-300 shadow-xl transform scale-105'
-                                                : 'hover:shadow-lg'
+                                                ? 'ring-4 ring-green-300 shadow-xl'
+                                                : ''
                                         }`}>
-                                            <WorkoutCard workout={workout} />
+                                            <WorkoutCard
+                                                workout={workout}
+                                                isActive={activeWorkoutIndex === index}
+                                            />
                                         </div>
 
-                                        {/* Кнопки дій */}
-                                        <div className="absolute bottom-4 left-4 right-4">
+                                        {/* Action Buttons - відокремлені від WorkoutCard */}
+                                        <div className="p-4 bg-gray-50 border-t">
                                             {activeWorkoutIndex === index ? (
-                                                <div className="bg-green-100 border border-green-300 rounded-lg p-2 text-center">
+                                                <div className="bg-green-100 border border-green-300 rounded-lg p-3 text-center">
                                                     <p className="text-green-700 font-medium text-sm mb-2">
                                                         Активне тренування
                                                     </p>
-                                                    <p className="text-green-600 font-bold">
+                                                    <p className="text-green-600 font-bold text-lg">
                                                         {formatTime(workoutTimer)}
                                                     </p>
                                                 </div>
@@ -261,9 +265,9 @@ const Workouts = () => {
                                                 <button
                                                     onClick={() => handleStartWorkout(index)}
                                                     disabled={activeWorkoutIndex !== null}
-                                                    className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition"
+                                                    className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-4 py-3 rounded-lg flex items-center justify-center space-x-2 transition font-medium"
                                                 >
-                                                    <Play size={16} />
+                                                    <Play size={18} />
                                                     <span>Почати тренування</span>
                                                 </button>
                                             )}
