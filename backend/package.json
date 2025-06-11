@@ -1,15 +1,23 @@
 {
-  "name": "backend",
+  "name": "fitness-app-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Фітнес додаток - бекенд API",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "setup-db": "node scripts/setupDatabase.js"
   },
-  "keywords": [],
+  "keywords": [
+    "fitness",
+    "health",
+    "nutrition",
+    "workout",
+    "api"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.1",
@@ -18,7 +26,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.15.1",
+    "mysql2": "^3.14.1",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {

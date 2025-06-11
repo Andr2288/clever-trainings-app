@@ -3,7 +3,7 @@
 import bcrypt from "bcryptjs";
 
 import utils from "../lib/utils.js";
-import User from "../models/user.model.js";
+import User from "../models/User.js";
 import cloudinary from "../lib/cloudinary.js";
 
 const signup = async (req, res) => {
